@@ -13,16 +13,15 @@ import {
   Divider,
 } from '@mui/material';
 
-console.log(import.meta.env.VITE_BACKEND_URL);
+
+// Log the current environment and backend URL
+console.log('Current environment:', import.meta.env.MODE);
+console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
+
 const socket = io(import.meta.env.VITE_BACKEND_URL, {
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
-  transports: ['polling', 'websocket'],  
-  path: '/socket.io/',
-  withCredentials: true,
-  secure: true,
-  rejectUnauthorized: false
 });
 
 function Chat() {
@@ -227,11 +226,38 @@ function Chat() {
                 >
                   <List>
                     {messages.map((msg, index) => (
-                      <ListItem key={index}>
-                        <ListItemText
-                          primary={msg.text}
-                          secondary={`${msg.user} - ${msg.time}`}
-                        />
+                      <ListItem
+                        key={index}
+                        sx={{
+                          justifyContent: msg.user === username ? 'flex-end' : 'flex-start',
+                          padding: '4px 16px'
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            maxWidth: '70%',
+                            backgroundColor: msg.user === username ? '#1976d2' : '#f5f5f5',
+                            color: msg.user === username ? 'white' : 'black',
+                            borderRadius: '12px',
+                            padding: '8px 12px',
+                            boxShadow: 1
+                          }}
+                        >
+                          <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
+                            {msg.text}
+                          </Typography>
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              display: 'block',
+                              color: msg.user === username ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)',
+                              textAlign: msg.user === username ? 'right' : 'left',
+                              marginTop: '4px'
+                            }}
+                          >
+                            {msg.user} - {msg.time}
+                          </Typography>
+                        </Box>
                       </ListItem>
                     ))}
                     <div ref={messagesEndRef} />

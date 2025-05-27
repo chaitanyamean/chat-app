@@ -14,14 +14,9 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_PROD],
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"]
   },
-  transports: ['websocket', 'polling'],  
-  allowEIO3: true,  
-  path: '/socket.io/', 
-  pingTimeout: 60000,
-  pingInterval: 25000
 });
 
 // Add a basic route to test if server is running
