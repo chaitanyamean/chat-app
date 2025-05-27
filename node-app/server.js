@@ -7,10 +7,14 @@ const path = require('path');
 const app = express();
 app.use(cors());
 
+// Load environment variables
+require('dotenv').config();
+
 const server = http.createServer(app);
+
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_PROD],
     methods: ["GET", "POST"]
   }
 });
