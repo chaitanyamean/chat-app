@@ -13,7 +13,8 @@ import {
   Divider,
 } from '@mui/material';
 
-const socket = io('https://chat-app-mmia.onrender.com', {
+console.log(import.meta.env.VITE_BACKEND_URL);
+const socket = io(import.meta.env.VITE_BACKEND_URL, {
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000
