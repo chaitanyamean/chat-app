@@ -17,14 +17,32 @@ const io = socketIo(server, {
     origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_PROD],
     methods: ["GET", "POST"]
   },
-  transports: ['websocket', 'polling'],  // Add this line
-  allowEIO3: true,  // Add this line
-  path: '/socket.io/'  // Add this line
+  transports: ['websocket', 'polling'],  
+  allowEIO3: true,  
+  path: '/socket.io/', 
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 // Add a basic route to test if server is running
 app.get('/', (req, res) => {
   res.send('Server is running');
+});
+
+// Add a health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// Handle 404s
+app.use((req, res) => {
+  res.status(404).send('Not Found');
 });
 
 // Store active rooms and their messages

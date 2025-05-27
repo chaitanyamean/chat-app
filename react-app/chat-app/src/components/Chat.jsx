@@ -18,8 +18,11 @@ const socket = io(import.meta.env.VITE_BACKEND_URL, {
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
-  transports: ['websocket', 'polling'],  // Add this line
-  path: '/socket.io/'  // Add this line
+  transports: ['polling', 'websocket'],  
+  path: '/socket.io/',
+  withCredentials: true,
+  secure: true,
+  rejectUnauthorized: false
 });
 
 function Chat() {
@@ -46,9 +49,18 @@ function Chat() {
     const socket = socketRef.current;
     console.log('Socket connected:', socket.connected);
 
-    // Add these event listeners
+   // Test backend connection
+   fetch(`${import.meta.env.VITE_BACKEND_URL}/health`)
+   .then(response => response.text())
+   .then(data => console.log('Backend health check:', data))
+   .catch(error => console.error('Backend health check failed:', error));
+
     socket.on('connect_error', (error) => {
       console.error('Connection Error:', error);
+      // Try to reconnect with polling if websocket fails
+      if (socket.io.opts.transports[0] === 'websocket') {
+        socket.io.opts.transports = ['polling', 'websocket'];
+      }
     });
 
     socket.on('connect', () => {
