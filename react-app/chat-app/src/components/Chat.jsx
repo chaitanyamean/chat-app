@@ -17,7 +17,9 @@ console.log(import.meta.env.VITE_BACKEND_URL);
 const socket = io(import.meta.env.VITE_BACKEND_URL, {
   reconnection: true,
   reconnectionAttempts: 5,
-  reconnectionDelay: 1000
+  reconnectionDelay: 1000,
+  transports: ['websocket', 'polling'],  // Add this line
+  path: '/socket.io/'  // Add this line
 });
 
 function Chat() {
@@ -39,8 +41,15 @@ function Chat() {
   // Socket event listeners
   useEffect(() => {
     console.log('Setting up socket listeners');
+    console.log('Backend URL:', import.meta.env.VITE_BACKEND_URL);
     
     const socket = socketRef.current;
+    console.log('Socket connected:', socket.connected);
+
+    // Add these event listeners
+    socket.on('connect_error', (error) => {
+      console.error('Connection Error:', error);
+    });
 
     socket.on('connect', () => {
       console.log('Socket connected');
@@ -88,6 +97,7 @@ function Chat() {
       socket.off('previousMessages');
       socket.off('roomList');
       socket.off('error');
+      socket.off('connect_error');
     };
   }, [currentRoom]);
 

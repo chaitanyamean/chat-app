@@ -16,7 +16,15 @@ const io = socketIo(server, {
   cors: {
     origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_PROD],
     methods: ["GET", "POST"]
-  }
+  },
+  transports: ['websocket', 'polling'],  // Add this line
+  allowEIO3: true,  // Add this line
+  path: '/socket.io/'  // Add this line
+});
+
+// Add a basic route to test if server is running
+app.get('/', (req, res) => {
+  res.send('Server is running');
 });
 
 // Store active rooms and their messages
