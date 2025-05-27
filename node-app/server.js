@@ -153,7 +153,7 @@ io.on('connection', (socket) => {
     // Broadcast to all clients in the room
     console.log('Broadcasting message to room:', room, messageData);
     console.log("messageData",messageData)
-    io.on(room).emit('message', messageData);
+    io.to(room).emit('message', messageData);
   });
 
   // Handle disconnection
